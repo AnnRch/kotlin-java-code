@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS public.companies (
     website CHARACTER VARYING(255),
     logo_url TEXT,
     total_jobs INTEGER DEFAULT 0,
-    avg_salary_all NUMERIC DEFAULT 0 NOT NULL,     -- Enforce this here!
-    salary_count_all INTEGER DEFAULT 0 NOT NULL,   -- Enforce this here!
+    avg_salary_all NUMERIC DEFAULT 0 NOT NULL,
+    salary_count_all INTEGER DEFAULT 0 NOT NULL,
     clicks INTEGER DEFAULT 0,
     views INTEGER DEFAULT 0,
     views_7d INTEGER DEFAULT 0,
@@ -184,7 +184,7 @@ END IF;
 SELECT slug INTO old_slug FROM public.companies WHERE id = OLD.company_id;
 END IF;
 
-     INSERT
+    INSERT
     IF (TG_OP = 'INSERT') THEN
         IF new_slug IS NOT NULL THEN
 UPDATE public.companies SET
@@ -211,7 +211,7 @@ UPDATE public.companies SET
 WHERE slug = old_slug;
 END IF;
 
-    -- 3. HANDLE UPDATE
+    -- UPDATE
     ELSIF (TG_OP = 'UPDATE') THEN
         -- The job moved to a completely different company
         IF (COALESCE(NEW.company_id, 0) != COALESCE(OLD.company_id, 0)) THEN
