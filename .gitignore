@@ -1,0 +1,21 @@
+.idea/
+**/.idea/
+*.iml
+
+# Ignore build artifacts at any level
+#build/
+#**/build/
+target/
+**/target/
+
+# System logs and environment variables
+*.log
+.env
+.DS_Store
+
+#.gitignore
+.gitattributes
+
+mvnw
+mvnw.cmd
+.mvn/
