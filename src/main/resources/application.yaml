@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: jobs
+
+  r2dbc:
+    url: r2dbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:postgres}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:secret}
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+    relational:
+      naming-strategy: org.springframework.data.relational.core.mapping.NamingStrategy
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    com.example.jobs.scheduler: DEBUG
+    org.springframework.scheduling: DEBUG
+
+app:
+  api:
+    aidevboard:
+      base-url: https://aidevboard.com
+      timeout-seconds: 5
