@@ -1,7 +1,7 @@
 package com.example.jobs.handlers;
 
 import com.example.jobs.dto.CompanyRegisterRequest;
-import com.example.jobs.service.CompanySyncService;
+import com.example.jobs.service.CompanySyncJavaService;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,9 +13,9 @@ import reactor.core.publisher.Mono;
 @Component
 public class CompanySyncHandler {
 
-  private final CompanySyncService companySyncService;
+  private final CompanySyncJavaService companySyncService;
 
-  public CompanySyncHandler(CompanySyncService companySyncService) {
+  public CompanySyncHandler(CompanySyncJavaService companySyncService) {
     this.companySyncService = companySyncService;
   }
 
@@ -23,7 +23,7 @@ public class CompanySyncHandler {
    * POST /api/v1/admin/sync/companies
    */
   public Mono<ServerResponse> triggerCompaniesOverviewSync(ServerRequest request) {
-    return companySyncService.syncAllCompaniesOverviewReactive()
+    return companySyncService.syncAllCompaniesOverviews()
         .then(ServerResponse.ok().bodyValue(Map.of("status", "Sync Complete")))
         .onErrorResume(e -> ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .bodyValue(Map.of("error", e.getMessage())));
@@ -34,7 +34,7 @@ public class CompanySyncHandler {
    */
   public Mono<ServerResponse> handleCompanyRegistration(ServerRequest request) {
     return request.bodyToMono(CompanyRegisterRequest.class)
-        .flatMap(companySyncService::registerAndSaveCompanyReactive)
+        .flatMap(companySyncService::registerAndSaveCompany)
         .flatMap(regResponse -> ServerResponse.ok()
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(regResponse));
@@ -80,7 +80,7 @@ public class CompanySyncHandler {
           new IllegalArgumentException("Mandatory body parameter 'name' is missing or blank."));
     }
 
-    return companySyncService.updateRemoteCompanyProfileReactive(slug, name, website, logoUrl);
+    return companySyncService.updateCompanyProfile(slug, name, website, logoUrl);
   }
 
 }

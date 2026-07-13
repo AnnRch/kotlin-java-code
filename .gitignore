@@ -19,3 +19,5 @@ target/
 mvnw
 mvnw.cmd
 .mvn/
+/kotlin/
+HELP.md

@@ -1,7 +1,7 @@
 package com.example.jobs.handlers;
 
 import com.example.jobs.dto.RegisterDeveloperRequest;
-import com.example.jobs.service.DeveloperService;
+import com.example.jobs.service.DeveloperJavaService;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,9 +14,9 @@ import reactor.core.publisher.Mono;
 @Component
 public class DeveloperHandler {
 
-  private final DeveloperService developerService;
+  private final DeveloperJavaService developerService;
 
-  public DeveloperHandler(DeveloperService developerService) {
+  public DeveloperHandler(DeveloperJavaService developerService) {
     this.developerService = developerService;
   }
 
@@ -25,7 +25,7 @@ public class DeveloperHandler {
    */
  public Mono<ServerResponse> handleDeveloperRegistration(ServerRequest request) {
     return request.bodyToMono(RegisterDeveloperRequest.class)
-        .flatMap(developerService::registerDeveloperReactive)
+        .flatMap(developerService::registerDeveloper)
         .flatMap(response -> ServerResponse.status(HttpStatus.CREATED)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(response))

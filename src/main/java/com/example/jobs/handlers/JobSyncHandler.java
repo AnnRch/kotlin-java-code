@@ -1,6 +1,6 @@
 package com.example.jobs.handlers;
 
-import com.example.jobs.service.JobSyncService;
+import com.example.jobs.service.JobSyncJavaService;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
@@ -13,9 +13,9 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class JobSyncHandler {
-  private final JobSyncService jobSyncService;
+  private final JobSyncJavaService jobSyncService;
 
-  public JobSyncHandler(JobSyncService jobSyncService) {
+  public JobSyncHandler(JobSyncJavaService jobSyncService) {
     this.jobSyncService = jobSyncService;
   }
 
@@ -25,7 +25,7 @@ public class JobSyncHandler {
   public Mono<ServerResponse> triggerSingleCompanyJobsSync(ServerRequest request) {
     String slug = request.pathVariable("slug");
 
-    return jobSyncService.syncSpecificCompanyJobsReactive(slug)
+    return jobSyncService.syncCompanyJobs(slug)
         .flatMap(profilePayload ->
             ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -45,7 +45,8 @@ public class JobSyncHandler {
    * POST /api/v1/admin/sync/jobs
    */
   public Mono<ServerResponse> triggerBulkJobsSync(ServerRequest request) {
-    return jobSyncService.syncAllJobsReactive()
+    return jobSyncService.fetchJobs()
+        .collectList()
         .flatMap(summary -> ServerResponse.ok()
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(summary))
@@ -66,7 +67,7 @@ public class JobSyncHandler {
           .bodyValue(Map.of("error", "Invalid structural UUID parameter provided."));
     }
 
-    return jobSyncService.syncSpecificJobReactive(jobId)
+    return jobSyncService.syncSpecificJob(jobId)
         .flatMap(jobPayload -> ServerResponse.ok()
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(jobPayload))

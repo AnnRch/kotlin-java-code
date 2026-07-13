@@ -1,7 +1,7 @@
 package com.example.jobs.handlers;
 
-import com.example.jobs.dto.SearchAnalyticsResponse;
-import com.example.jobs.service.AnalyticsService;
+import com.example.jobs.dto.kotlin.SearchAnalyticsResponse;
+import com.example.jobs.service.AnalyticsJavaService;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
@@ -13,9 +13,9 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class AnalyticsHandler {
-  private final AnalyticsService analyticsService;
+  private final AnalyticsJavaService analyticsService;
 
-  public AnalyticsHandler(AnalyticsService analyticsService) {
+  public AnalyticsHandler(AnalyticsJavaService analyticsService) {
     this.analyticsService = analyticsService;
   }
 
@@ -35,7 +35,7 @@ public class AnalyticsHandler {
 
     return ServerResponse.ok()
         .contentType(MediaType.APPLICATION_JSON)
-        .body(analyticsService.getSearchAnalyticsAsMono(requestedDays), SearchAnalyticsResponse.class)
+        .body(analyticsService.getSearchAnalytics(requestedDays), SearchAnalyticsResponse.class)
 
         .onErrorResume(NoSuchElementException.class, ex ->
             ServerResponse.status(HttpStatus.NOT_FOUND)

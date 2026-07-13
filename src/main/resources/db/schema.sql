@@ -184,7 +184,7 @@ END IF;
 SELECT slug INTO old_slug FROM public.companies WHERE id = OLD.company_id;
 END IF;
 
-    INSERT
+--     INSERT
     IF (TG_OP = 'INSERT') THEN
         IF new_slug IS NOT NULL THEN
 UPDATE public.companies SET
